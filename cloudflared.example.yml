@@ -1,0 +1,7 @@
+# Cloudflare Tunnel config
+# Replace <UUID> after running: cloudflared tunnel create wonder
+tunnel: <UUID>
+credentials-file: C:/Users/<your-user>/.cloudflared/<UUID>.json
+
+ingress:
+  - service: http://localhost:80

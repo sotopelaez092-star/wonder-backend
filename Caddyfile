@@ -1,0 +1,44 @@
+# Wonder MVP — Caddy on :80 (Cloudflare Tunnel will terminate TLS upstream)
+{
+    auto_https off
+}
+
+:80 {
+    root * ./www
+    encode gzip zstd
+
+    # API → Hono Node
+    handle /api/* {
+        reverse_proxy localhost:3001
+    }
+
+    # Admin SPA
+    handle /admin* {
+        try_files {path} /admin/index.html
+        file_server
+    }
+
+    # Static + courses
+    handle {
+        file_server {
+            precompressed gzip
+        }
+    }
+
+    # Cache headers for static
+    header /assets/*            Cache-Control "public, max-age=2592000, immutable"
+    header /courses/*/assets/*  Cache-Control "public, max-age=2592000, immutable"
+    header /courses/*/sprites/* Cache-Control "public, max-age=2592000, immutable"
+    header /courses/*/audio/*   Cache-Control "public, max-age=2592000, immutable"
+    header /courses/*/ref/*     Cache-Control "public, max-age=2592000, immutable"
+    header /index.html          Cache-Control "no-cache"
+    header /admin/*             Cache-Control "no-cache"
+    header /courses.json        Cache-Control "no-cache"
+
+    log {
+        output file ./data/caddy.log {
+            roll_size 10MB
+            roll_keep 5
+        }
+    }
+}

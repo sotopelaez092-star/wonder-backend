@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="520" y2="360"><stop stop-color="#f4ffe8"/><stop offset="1" stop-color="#d8ffad"/></linearGradient>
+    <linearGradient id="green" x1="228" y1="70" x2="398" y2="302"><stop stop-color="#65e100"/><stop offset="1" stop-color="#3fbd00"/></linearGradient>
+    <radialGradient id="face" cx=".45" cy=".32" r=".78"><stop stop-color="#d8ffad"/><stop offset="1" stop-color="#b8f985"/></radialGradient>
+  </defs>
+  <rect width="520" height="360" rx="30" fill="url(#bg)"/>
+  <circle cx="70" cy="70" r="12" fill="#65e100" opacity=".25"/>
+  <circle cx="456" cy="68" r="16" fill="#65e100" opacity=".18"/>
+  <circle cx="466" cy="286" r="12" fill="#65e100" opacity=".22"/>
+  <ellipse cx="260" cy="316" rx="180" ry="18" fill="#4b3323" opacity=".12"/>
+  <g>
+    <rect x="58" y="196" width="150" height="64" rx="18" fill="#fffdf3" stroke="#4b3323" stroke-width="6"/>
+    <path d="M74 196c9-33 34-52 70-52 34 0 55 19 60 52Z" fill="#ffc800" stroke="#4b3323" stroke-width="6"/>
+    <circle cx="98" cy="238" r="15" fill="#65e100" stroke="#4b3323" stroke-width="5"/>
+    <circle cx="168" cy="238" r="15" fill="#65e100" stroke="#4b3323" stroke-width="5"/>
+    <path d="M84 196h105" stroke="#4b3323" stroke-width="5" opacity=".35"/>
+  </g>
+  <path d="M246 104 221 82c-11-10-8-28 7-34l45 42Z" fill="#65e100"/>
+  <path d="M374 104l25-22c11-10 8-28-7-34l-45 42Z" fill="#65e100"/>
+  <path d="M238 152c0-58 34-92 82-92s82 34 82 92v38c0 58-34 94-82 94s-82-36-82-94Z" fill="url(#green)"/>
+  <ellipse cx="320" cy="198" rx="68" ry="66" fill="url(#face)"/>
+  <ellipse cx="282" cy="157" rx="27" ry="31" fill="#4b3323"/>
+  <ellipse cx="358" cy="157" rx="27" ry="31" fill="#4b3323"/>
+  <circle cx="274" cy="145" r="10" fill="#fff"/>
+  <circle cx="350" cy="145" r="10" fill="#fff"/>
+  <path d="M295 116c13-11 35-10 47 1M358 116c12-11 30-12 42-2" stroke="#cfff9a" stroke-width="13" stroke-linecap="round"/>
+  <path d="M320 178c12 7 8 24-1 34M320 178c-4 23-27 34-45 19M320 178c5 25 31 35 50 18" fill="none" stroke="#4b3323" stroke-width="12" stroke-linecap="round"/>
+  <path d="M245 208c-36 12-58 29-66 54" stroke="#cfff9a" stroke-width="18" stroke-linecap="round"/>
+  <path d="M395 208c30 12 48 28 56 50" stroke="#cfff9a" stroke-width="18" stroke-linecap="round"/>
+  <rect x="403" y="218" width="70" height="48" rx="12" fill="#fffdf3" stroke="#4b3323" stroke-width="5"/>
+  <path d="M418 236h38M418 250h28" stroke="#65e100" stroke-width="6" stroke-linecap="round"/>
+</svg>

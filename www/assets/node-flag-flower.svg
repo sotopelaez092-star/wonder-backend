@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132">
+  <defs>
+    <linearGradient id="petal" x1="18" y1="12" x2="112" y2="120"><stop stop-color="#f4fff0"/><stop offset="1" stop-color="#cfff9a"/></linearGradient>
+    <linearGradient id="green" x1="34" y1="30" x2="98" y2="102"><stop stop-color="#65e100"/><stop offset="1" stop-color="#3fbd00"/></linearGradient>
+  </defs>
+  <ellipse cx="66" cy="123" rx="36" ry="6" fill="#dcedd2"/>
+  <g fill="url(#petal)" stroke="#4b3323" stroke-width="4">
+    <circle cx="66" cy="24" r="20"/><circle cx="98" cy="40" r="20"/><circle cx="100" cy="74" r="20"/>
+    <circle cx="66" cy="96" r="20"/><circle cx="32" cy="74" r="20"/><circle cx="34" cy="40" r="20"/>
+  </g>
+  <circle cx="66" cy="62" r="38" fill="url(#green)" stroke="#4b3323" stroke-width="5"/>
+  <rect x="43" y="50" width="46" height="32" rx="7" fill="#ee1c25" stroke="#4b3323" stroke-width="4"/>
+  <path d="m56 57 3 7 8 .6-6 5 2 8-7-4-7 4 2-8-6-5 8-.6Z" fill="#ffde00"/>
+</svg>

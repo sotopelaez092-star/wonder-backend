@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wonder Admin</title>
+<style>
+  :root {
+    --green: #58cc02; --green-edge: #2f9d00;
+    --red: #ff4b4b; --yellow: #ffc800;
+    --bg: #f7f7f7; --card: #fff;
+    --text: #2b2b2b; --muted: #8e8e8e;
+    --border: #e5e5e5; --border-strong: #c8c8c8;
+  }
+  * { box-sizing: border-box; }
+  body, html { margin: 0; padding: 0; }
+  body {
+    font: 14px -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ===== Login ===== */
+  .login-wrap {
+    min-height: 100vh; display: grid; place-items: center; padding: 20px;
+  }
+  .login-card {
+    background: var(--card); border-radius: 14px; padding: 28px;
+    width: 100%; max-width: 360px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  }
+  .login-card h1 { margin: 0 0 4px; font-size: 22px; }
+  .login-card p { color: var(--muted); margin: 0 0 18px; }
+  .login-card input {
+    width: 100%; padding: 12px 14px; font: inherit; font-size: 15px;
+    border: 2px solid var(--border); border-radius: 10px; background: #fafafa;
+  }
+  .login-card input:focus { outline: 0; border-color: var(--green); }
+  .login-card .err { color: var(--red); font-size: 12px; min-height: 16px; padding-top: 8px; font-weight: 700; }
+
+  /* ===== App ===== */
+  .app { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; }
+  .sidebar {
+    background: #1f2933; color: #d4dde4; padding: 16px 0;
+  }
+  .sidebar h1 { font-size: 16px; padding: 0 18px 14px; margin: 0; color: #fff; border-bottom: 1px solid #2b3744; }
+  .nav-item {
+    display: block; padding: 11px 18px; color: #d4dde4; text-decoration: none;
+    cursor: pointer; font-weight: 700; border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: #2b3744; }
+  .nav-item.active { background: #2b3744; border-left-color: var(--green); color: #fff; }
+  .nav-foot { position: absolute; bottom: 16px; left: 0; width: 200px; padding: 0 18px; }
+  .nav-foot button {
+    width: 100%; padding: 8px; background: transparent; border: 1px solid #2b3744; color: #8e9ba8;
+    border-radius: 6px; cursor: pointer; font: inherit;
+  }
+  .nav-foot button:hover { background: #2b3744; color: #fff; }
+
+  main { padding: 24px 28px; overflow-x: auto; }
+  h2 { margin: 0 0 18px; font-size: 22px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--card); border-radius: 10px; padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .stat-card .label { color: var(--muted); font-size: 12px; font-weight: 700; }
+  .stat-card .value { font-size: 28px; font-weight: 800; margin-top: 4px; }
+  .stat-card .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  .panel { background: var(--card); border-radius: 10px; padding: 18px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .panel h3 { margin: 0 0 12px; font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 8px; color: var(--muted); font-weight: 700; border-bottom: 2px solid var(--border); }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tr:hover td { background: #fafafa; }
+  td .small { color: var(--muted); font-size: 11px; }
+
+  .row-flex { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .row-flex input, .row-flex button, .row-flex select {
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
+    font: inherit; background: #fff;
+  }
+  .row-flex input { min-width: 200px; }
+  button.primary { background: var(--green); color: #fff; border-color: var(--green); cursor: pointer; font-weight: 700; }
+  button.primary:hover { background: var(--green-edge); border-color: var(--green-edge); }
+  button.ghost { cursor: pointer; }
+  button.danger { background: #fff; color: var(--red); border-color: #f1c8c8; cursor: pointer; }
+  button.danger:hover { background: #ffeded; }
+
+  .funnel-bar {
+    background: var(--border); height: 24px; border-radius: 4px; position: relative; overflow: hidden;
+    margin: 4px 0;
+  }
+  .funnel-bar .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--green); display: flex; align-items: center; padding-left: 8px; color: #fff; font-size: 12px; font-weight: 700; }
+  .funnel-row { display: grid; grid-template-columns: 180px 1fr 80px 80px; gap: 12px; align-items: center; padding: 6px 0; }
+  .funnel-row .label-cell { font-weight: 700; font-size: 13px; }
+  .funnel-row .count-cell { text-align: right; font-weight: 700; }
+  .funnel-row .pct-cell { text-align: right; color: var(--muted); font-size: 12px; }
+
+  .courses-list { display: flex; flex-direction: column; gap: 12px; }
+  .pack-block { border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #fafafa; }
+  .pack-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .pack-head input { padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font: inherit; }
+  .pack-head .title-in { flex: 1; min-width: 160px; font-weight: 700; }
+  .pack-head .icon-in { width: 50px; text-align: center; }
+  .lesson-row {
+    display: grid; grid-template-columns: 30px 1fr 1fr 30px 30px; gap: 8px; align-items: center;
+    padding: 4px 0;
+  }
+  .lesson-row input { padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font: inherit; background: #fff; font-size: 12px; }
+  .lesson-row .drag { color: var(--muted); cursor: grab; user-select: none; text-align: center; }
+  .add-btn { background: transparent; border: 1px dashed var(--border-strong); color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; font: inherit; font-size: 12px; }
+  .add-btn:hover { color: var(--green-edge); border-color: var(--green); }
+
+  .upload-box {
+    border: 2px dashed var(--border-strong); border-radius: 10px; padding: 24px; text-align: center;
+    margin-bottom: 16px; background: #fafafa;
+  }
+  .upload-box.drag { border-color: var(--green); background: rgba(88,204,2,.06); }
+  .upload-box input[type=file] { display: none; }
+  .upload-box label { color: var(--green-edge); font-weight: 700; cursor: pointer; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%) translateY(20px);
+    background: rgba(0,0,0,.85); color: #fff; padding: 10px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s; z-index: 9999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.err { background: var(--red); }
+  .empty-state { text-align: center; padding: 40px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div id="login-view" class="login-wrap" style="display:none;">
+  <div class="login-card">
+    <h1>Wonder Admin</h1>
+    <p>试用阶段管理面板</p>
+    <input id="login-pw" type="password" placeholder="管理员密码" autocomplete="current-password">
+    <div class="err" id="login-err"></div>
+    <button class="primary" style="width:100%; padding:12px; margin-top:12px; border:0; border-radius:10px;" id="login-btn">登录</button>
+  </div>
+</div>
+
+<div id="app-view" class="app" style="display:none;">
+  <aside class="sidebar" style="position:relative;">
+    <h1>Wonder · Admin</h1>
+    <a class="nav-item active" data-tab="dashboard">📊 Dashboard</a>
+    <a class="nav-item" data-tab="leads">📨 Waitlist</a>
+    <a class="nav-item" data-tab="events">📈 Events</a>
+    <a class="nav-item" data-tab="courses">📚 Courses</a>
+    <div class="nav-foot"><button id="logout-btn">登出</button></div>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_TOKEN = 'wonder_admin_token';
+let TOKEN = localStorage.getItem(STORAGE_TOKEN) || '';
+
+const $ = (s, p = document) => p.querySelector(s);
+const $$ = (s, p = document) => Array.from(p.querySelectorAll(s));
+
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+let toastTimer;
+function toast(msg, isErr) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (isErr ? ' err' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+async function api(method, url, body, isForm) {
+  const opts = { method, headers: {} };
+  if (TOKEN) opts.headers['authorization'] = 'Bearer ' + TOKEN;
+  if (body !== undefined) {
+    if (isForm) opts.body = body;
+    else { opts.headers['content-type'] = 'application/json'; opts.body = JSON.stringify(body); }
+  }
+  const r = await fetch('/api' + url, opts);
+  if (r.status === 401) { logout(); throw new Error('unauthorized'); }
+  const ct = r.headers.get('content-type') || '';
+  return ct.includes('json') ? r.json() : r.text();
+}
+
+/* ===== Login ===== */
+async function checkSession() {
+  if (!TOKEN) return false;
+  try { const r = await api('GET', '/admin/auth/me'); return r.ok; }
+  catch { return false; }
+}
+async function login() {
+  const pw = $('#login-pw').value;
+  $('#login-err').textContent = '';
+  try {
+    const r = await fetch('/api/admin/auth/login', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ password: pw }) });
+    if (!r.ok) { const e = await r.json().catch(()=>({})); $('#login-err').textContent = e.error || '登录失败'; return; }
+    const d = await r.json();
+    TOKEN = d.token; localStorage.setItem(STORAGE_TOKEN, TOKEN);
+    showApp();
+  } catch { $('#login-err').textContent = '网络错误'; }
+}
+async function logout() {
+  try { await api('POST', '/admin/auth/logout'); } catch {}
+  TOKEN = ''; localStorage.removeItem(STORAGE_TOKEN);
+  showLogin();
+}
+function showLogin() { $('#login-view').style.display = 'grid'; $('#app-view').style.display = 'none'; setTimeout(() => $('#login-pw')?.focus(), 50); }
+function showApp() { $('#login-view').style.display = 'none'; $('#app-view').style.display = 'grid'; loadTab('dashboard'); }
+
+/* ===== Tabs ===== */
+async function loadTab(name) {
+  $$('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === name));
+  const m = $('#main');
+  if (name === 'dashboard') return renderDashboard(m);
+  if (name === 'leads') return renderLeads(m);
+  if (name === 'events') return renderEvents(m);
+  if (name === 'courses') return renderCourses(m);
+}
+
+/* ===== Dashboard ===== */
+async function renderDashboard(m) {
+  m.innerHTML = '<h2>Dashboard</h2><div id="d-cards">加载中…</div><div class="panel" id="d-funnel"></div>';
+  try {
+    const s = await api('GET', '/admin/stats/funnel');
+    const totalSessions = s.total_sessions || 0;
+    const waitlist = s.waitlist_total || 0;
+    const conv = totalSessions ? (waitlist / totalSessions * 100).toFixed(1) : '0';
+
+    $('#d-cards').innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-card"><div class="label">累计 sessions</div><div class="value">${totalSessions}</div></div>
+        <div class="stat-card"><div class="label">Waitlist 提交</div><div class="value">${waitlist}</div><div class="sub">访客→候补 ${conv}%</div></div>
+      </div>`;
+
+    const max = Math.max(1, ...s.funnel.map(f => f.count));
+    $('#d-funnel').innerHTML = `<h3>漏斗</h3>` + s.funnel.map(f => `
+      <div class="funnel-row">
+        <div class="label-cell">${esc(f.label)}</div>
+        <div class="funnel-bar"><div class="fill" style="width:${f.count / max * 100}%">${f.count}</div></div>
+        <div class="count-cell">${f.count}</div>
+        <div class="pct-cell">${(f.conversion * 100).toFixed(1)}%</div>
+      </div>
+    `).join('');
+  } catch (e) { m.innerHTML = '<h2>Dashboard</h2><div class="panel">加载失败：' + esc(e.message) + '</div>'; }
+}
+
+/* ===== Leads ===== */
+let leadsState = { offset: 0, limit: 50, q: '' };
+async function renderLeads(m) {
+  m.innerHTML = `
+    <h2>Waitlist · 内测申请</h2>
+    <div class="panel">
+      <div class="row-flex" style="margin-bottom:14px;">
+        <input id="l-q" placeholder="搜索 contact / utm_source / utm_campaign" value="${esc(leadsState.q)}">
+        <button class="primary" id="l-search">搜索</button>
+        <button class="ghost" id="l-reset">重置</button>
+        <a class="ghost" id="l-export" style="margin-left:auto;padding:8px 12px;border:1px solid var(--border);border-radius:6px;color:var(--text);text-decoration:none;cursor:pointer;">⬇ 导出 CSV</a>
+      </div>
+      <div id="l-table"></div>
+      <div class="row-flex" style="margin-top:14px;">
+        <button class="ghost" id="l-prev">← 前一页</button>
+        <span id="l-info" style="color:var(--muted);font-size:12px;"></span>
+        <button class="ghost" id="l-next">后一页 →</button>
+      </div>
+    </div>`;
+  $('#l-search').onclick = () => { leadsState.q = $('#l-q').value.trim(); leadsState.offset = 0; loadLeads(); };
+  $('#l-reset').onclick = () => { leadsState.q = ''; leadsState.offset = 0; $('#l-q').value=''; loadLeads(); };
+  $('#l-prev').onclick = () => { leadsState.offset = Math.max(0, leadsState.offset - leadsState.limit); loadLeads(); };
+  $('#l-next').onclick = () => { leadsState.offset += leadsState.limit; loadLeads(); };
+  $('#l-export').onclick = (e) => { e.preventDefault(); downloadCSV(); };
+  $('#l-q').addEventListener('keydown', e => { if (e.key === 'Enter') $('#l-search').click(); });
+  loadLeads();
+}
+async function loadLeads() {
+  const params = new URLSearchParams({ limit: leadsState.limit, offset: leadsState.offset });
+  if (leadsState.q) params.set('q', leadsState.q);
+  const data = await api('GET', '/admin/leads?' + params);
+  const rows = data.rows || [];
+  $('#l-info').textContent = `总 ${data.total} 条 · 第 ${data.offset + 1}-${Math.min(data.offset + data.limit, data.total)} 条`;
+  $('#l-table').innerHTML = rows.length ? `
+    <table>
+      <thead><tr>
+        <th>Contact</th><th>年级</th><th>兴趣</th><th>课程包</th>
+        <th>UTM source</th><th>Campaign</th><th>时间</th>
+      </tr></thead>
+      <tbody>
+        ${rows.map(r => `
+          <tr>
+            <td><strong>${esc(r.contact)}</strong></td>
+            <td>${esc(r.grade)}</td>
+            <td>${esc(r.interest)}</td>
+            <td>${esc(r.pack)}${r.lesson ? ' · ' + esc(r.lesson) : ''}</td>
+            <td>${esc(r.utm_source || r.source)}</td>
+            <td>${esc(r.utm_campaign)}</td>
+            <td><span class="small">${esc(r.created_at.slice(0, 19).replace('T', ' '))}</span></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>` : '<div class="empty-state">还没有候补提交</div>';
+}
+async function downloadCSV() {
+  const r = await fetch('/api/admin/leads/export.csv', { headers: { 'authorization': 'Bearer ' + TOKEN } });
+  const blob = await r.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'waitlist.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ===== Events ===== */
+async function renderEvents(m) {
+  m.innerHTML = `<h2>事件日志</h2><div class="panel" id="e-content">加载中…</div>`;
+  const rows = await api('GET', '/admin/stats/recent-events?limit=200');
+  $('#e-content').innerHTML = rows.length ? `
+    <table>
+      <thead><tr><th>类型</th><th>页面</th><th>Session</th><th>properties</th><th>时间</th></tr></thead>
+      <tbody>${rows.map(r => `
+        <tr>
+          <td><strong>${esc(r.type)}</strong></td>
+          <td>${esc(r.page)}</td>
+          <td><span class="small">${esc(r.session_id.slice(0, 14))}</span></td>
+          <td><span class="small">${esc(r.properties)}</span></td>
+          <td><span class="small">${esc(r.created_at.slice(0, 19).replace('T', ' '))}</span></td>
+        </tr>`).join('')}</tbody>
+    </table>` : '<div class="empty-state">还没有事件</div>';
+}
+
+/* ===== Courses ===== */
+let coursesData = null;
+let foldersData = [];
+
+async function renderCourses(m) {
+  m.innerHTML = `
+    <h2>课程管理</h2>
+    <div class="panel">
+      <h3>📦 上传新课程（zip 包）</h3>
+      <div class="upload-box" id="upload-box">
+        <p style="margin:0 0 10px;color:var(--muted);font-size:13px;">把课程 zip 拖到这里，或</p>
+        <input type="file" id="upload-file" accept=".zip">
+        <label for="upload-file">点击选择文件</label>
+        <div class="row-flex" style="justify-content:center; margin-top:14px;">
+          <input id="upload-id" placeholder="课程 id（小写字母数字-_）" pattern="[a-z0-9_-]+">
+          <button class="primary" id="upload-btn">上传</button>
+        </div>
+        <div id="upload-msg" style="margin-top:10px;color:var(--muted);font-size:12px;"></div>
+      </div>
+      <h3 style="margin-top:18px;">📁 已存在课程目录</h3>
+      <div id="folder-list" style="font-size:12px;color:var(--muted);"></div>
+    </div>
+    <div class="panel">
+      <h3 style="display:flex;align-items:center;justify-content:space-between;">
+        <span>📚 课程包结构 (courses.json)</span>
+        <button class="primary" id="save-courses">💾 保存</button>
+      </h3>
+      <p style="color:var(--muted);font-size:12px;margin:0 0 14px;">编辑课程包结构。第一个 pack 的第一节课显示在导航顶部 banner。</p>
+      <div id="courses-edit" class="courses-list"></div>
+      <button class="add-btn" id="add-pack" style="margin-top:12px;">+ 新建课程包</button>
+    </div>`;
+
+  $('#upload-btn').onclick = uploadZip;
+  $('#save-courses').onclick = saveCourses;
+  $('#add-pack').onclick = () => { coursesData.packs.push({ id: 'pack-' + Date.now(), title: '新课程包', icon: '', unit: '', playable: true, lessons: [] }); renderCoursesEdit(); };
+
+  const box = $('#upload-box');
+  box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('drag'); });
+  box.addEventListener('dragleave', () => box.classList.remove('drag'));
+  box.addEventListener('drop', (e) => {
+    e.preventDefault(); box.classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (f) $('#upload-file').files = e.dataTransfer.files;
+  });
+
+  coursesData = await api('GET', '/admin/courses');
+  if (!coursesData.packs) coursesData.packs = [];
+  foldersData = await api('GET', '/admin/courses/folders');
+  renderFolders();
+  renderCoursesEdit();
+}
+
+function renderFolders() {
+  $('#folder-list').innerHTML = foldersData.length
+    ? foldersData.map(f => `
+        <span style="display:inline-block;margin:2px 6px 2px 0;padding:4px 8px;background:${f.hasIndex?'#eafde0':'#ffe9e9'};color:${f.hasIndex?'var(--green-edge)':'var(--red)'};border-radius:4px;font-weight:700;">
+          ${esc(f.id)} <span style="opacity:.6;font-weight:400;">${(f.sizeBytes/1024/1024).toFixed(1)}M${f.hasIndex?'':' ⚠ 无 index.html'}</span>
+        </span>
+      `).join('')
+    : '<em>暂无任何课程目录。上传 zip 来添加。</em>';
+}
+
+function renderCoursesEdit() {
+  const c = $('#courses-edit');
+  c.innerHTML = coursesData.packs.map((pack, pi) => `
+    <div class="pack-block" data-pi="${pi}">
+      <div class="pack-head">
+        <input class="icon-in" placeholder="图标" value="${esc(pack.icon || '')}" data-k="icon">
+        <input class="title-in" placeholder="课程包名" value="${esc(pack.title || '')}" data-k="title">
+        <input placeholder="单元名" value="${esc(pack.unit || '')}" data-k="unit" style="width:120px;">
+        <label style="font-size:12px;display:flex;align-items:center;gap:4px;"><input type="checkbox" data-k="playable" ${pack.playable!==false?'checked':''}> playable</label>
+        <button class="danger" data-act="del-pack">删</button>
+      </div>
+      <div class="lesson-row" style="font-weight:700;color:var(--muted);font-size:11px;border-bottom:1px solid var(--border);padding-bottom:4px;margin-bottom:4px;">
+        <div></div><div>课程 ID</div><div>标题</div><div></div><div></div>
+      </div>
+      ${(pack.lessons || []).map((les, li) => `
+        <div class="lesson-row" data-li="${li}">
+          <div class="drag" title="拖动排序">⋮⋮</div>
+          <input value="${esc(les.id || '')}" data-k="id" placeholder="lesson id">
+          <input value="${esc(les.title || '')}" data-k="title" placeholder="lesson 标题">
+          <button class="ghost" data-act="set-url" title="选择 play_url">📁</button>
+          <button class="danger" data-act="del-lesson">×</button>
+        </div>
+        <div class="small" style="padding-left:38px;color:var(--muted);font-size:11px;margin-bottom:4px;">play_url: ${esc(les.play_url || '(未设)')}</div>
+      `).join('')}
+      <button class="add-btn" data-act="add-lesson">+ 新增 lesson</button>
+    </div>
+  `).join('');
+
+  c.onclick = (e) => {
+    const act = e.target.dataset.act;
+    if (!act) return;
+    const pi = +e.target.closest('[data-pi]').dataset.pi;
+    const li = e.target.closest('[data-li]') ? +e.target.closest('[data-li]').dataset.li : null;
+    const pack = coursesData.packs[pi];
+    if (act === 'del-pack' && confirm(`删除课程包「${pack.title}」?`)) { coursesData.packs.splice(pi, 1); renderCoursesEdit(); }
+    if (act === 'add-lesson') { pack.lessons = pack.lessons || []; pack.lessons.push({ id: '', title: '新课', play_url: '' }); renderCoursesEdit(); }
+    if (act === 'del-lesson') { pack.lessons.splice(li, 1); renderCoursesEdit(); }
+    if (act === 'set-url') {
+      const opts = foldersData.map(f => f.id);
+      const cur = pack.lessons[li].play_url || '';
+      const pick = prompt('从已存在目录选一个 (输入完整 id)：\n' + opts.join(', '), cur.replace('/courses/','').replace(/\/$/,''));
+      if (pick) pack.lessons[li].play_url = '/courses/' + pick + '/';
+      renderCoursesEdit();
+    }
+  };
+
+  c.oninput = (e) => {
+    const pi = +e.target.closest('[data-pi]').dataset.pi;
+    const liEl = e.target.closest('[data-li]');
+    const k = e.target.dataset.k;
+    if (!k) return;
+    if (liEl) {
+      const li = +liEl.dataset.li;
+      coursesData.packs[pi].lessons[li][k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    } else {
+      coursesData.packs[pi][k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    }
+  };
+}
+
+async function saveCourses() {
+  try { await api('PUT', '/admin/courses', coursesData); toast('已保存'); }
+  catch (e) { toast('保存失败: ' + e.message, true); }
+}
+
+async function uploadZip() {
+  const file = $('#upload-file').files[0];
+  const id = $('#upload-id').value.trim();
+  if (!file) return toast('请选 zip 文件', true);
+  if (!id) return toast('请填课程 id', true);
+  const fd = new FormData(); fd.append('file', file); fd.append('id', id);
+  $('#upload-msg').textContent = '上传中…';
+  try {
+    const r = await api('POST', '/admin/courses/upload', fd, true);
+    if (r.ok) {
+      $('#upload-msg').innerHTML = `<span style="color:var(--green-edge)">✓ 已解压到 ${esc(r.path)}（${r.entries} 文件，${r.hasIndex?'有':'<b style="color:red">无</b>'} index.html）</span>`;
+      $('#upload-id').value = ''; $('#upload-file').value = '';
+      foldersData = await api('GET', '/admin/courses/folders');
+      renderFolders();
+      toast('课程已上传');
+    } else {
+      $('#upload-msg').innerHTML = `<span style="color:var(--red)">${esc(r.error || '失败')}</span>`;
+    }
+  } catch (e) {
+    $('#upload-msg').innerHTML = `<span style="color:var(--red)">${esc(e.message)}</span>`;
+  }
+}
+
+/* ===== Init ===== */
+$$('.nav-item').forEach(el => el.onclick = () => loadTab(el.dataset.tab));
+$('#login-btn').onclick = login;
+$('#login-pw')?.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+$('#logout-btn').onclick = logout;
+
+(async () => {
+  if (await checkSession()) showApp(); else showLogin();
+})();
+</script>
+</body>
+</html>

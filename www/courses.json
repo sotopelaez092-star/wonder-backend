@@ -1,0 +1,79 @@
+{
+  "_comment": "课程数据。改 play_url 把课程指到 ECS 上的对应路径。pack 决定导航树上分到哪个课程包。",
+  "host": "http://8.155.166.119",
+  "packs": [
+    {
+      "id": "g2-math",
+      "title": "二年级数学",
+      "icon": "数",
+      "unit": "应用启蒙",
+      "playable": true,
+      "lessons": [
+        { "id": "yushu-blocks", "title": "认识余数（积木风）", "play_url": "/courses/g2-math-yushu-blocks/" },
+        { "id": "yushu-chu",    "title": "有余数的除法",       "play_url": "/courses/g2-math-yushu-chu/" },
+        { "id": "tuili",        "title": "数学广角推理",       "play_url": "/courses/g2-math-tuili/" }
+      ]
+    },
+    {
+      "id": "g2-chinese",
+      "title": "二年级语文",
+      "icon": "语",
+      "unit": "寓言故事",
+      "playable": true,
+      "lessons": [
+        { "id": "jingdi", "title": "坐井观天", "play_url": "/courses/g2-chinese-jingdi/" }
+      ]
+    },
+    {
+      "id": "g5-math",
+      "title": "五年级数学",
+      "icon": "数",
+      "unit": "数论",
+      "playable": true,
+      "lessons": [
+        { "id": "lcm", "title": "最小公倍数", "play_url": "/courses/g5-math-lcm/" }
+      ]
+    },
+    {
+      "id": "g6-math",
+      "title": "六年级数学",
+      "icon": "数",
+      "unit": "几何与比例",
+      "playable": true,
+      "lessons": [
+        { "id": "yuan", "title": "圆的面积",  "play_url": "/courses/g6-math-yuan/" },
+        { "id": "bili", "title": "正反比例",  "play_url": "/courses/g6-math-bili/" }
+      ]
+    },
+    {
+      "id": "extra-science",
+      "title": "课外科学",
+      "icon": "科",
+      "unit": "现象观察",
+      "playable": true,
+      "lessons": [
+        { "id": "butterfly", "title": "蝴蝶效应", "play_url": "/courses/extra-science-butterfly/" }
+      ]
+    },
+    {
+      "id": "english",
+      "title": "英语",
+      "icon": "英",
+      "unit": "单词养成",
+      "playable": true,
+      "lessons": [
+        { "id": "word-pet", "title": "单词宠物", "play_url": "/courses/english-word-pet/" }
+      ]
+    },
+    {
+      "id": "zizhen",
+      "title": "字镇",
+      "icon": "字",
+      "unit": "汉字大世界",
+      "playable": true,
+      "lessons": [
+        { "id": "zizhen", "title": "字镇", "play_url": "/courses/zizhen/" }
+      ]
+    }
+  ]
+}
